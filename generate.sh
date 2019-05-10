@@ -1,16 +1,21 @@
 #!/bin/sh
-#
-# Copyright IBM Corp All Rights Reserved
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+
+# Exit on first error, print all commands.
+set -ev
+
+rm -rf ~/.hfc-key-store/*
+
+mkdir -p ~/.hfc-key-store
+
 export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 CHANNEL_NAME=mychannel
 
 # remove previous crypto material and config transactions
-rm -fr config/*
-rm -fr crypto-config/*
+rm -fr config
+rm -fr crypto-config
+mkdir config
+mkdir crypto-config
 
 # generate crypto material
 cryptogen generate --config=./crypto-config.yaml

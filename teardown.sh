@@ -1,9 +1,5 @@
 #!/bin/bash
-#
-# Copyright IBM Corp All Rights Reserved
-#
-# SPDX-License-Identifier: Apache-2.0
-#
+
 # Exit on first error, print all commands.
 set -e
 
@@ -12,9 +8,8 @@ docker-compose -f docker-compose.yml kill && docker-compose -f docker-compose.ym
 
 # remove the local state
 rm -f ~/.hfc-key-store/*
+rm -rf config crypto-config
 
 # remove chaincode docker images
 docker rm $(docker ps -aq)
 docker rmi $(docker images dev-* -q)
-
-# Your system is now clean
