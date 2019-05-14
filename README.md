@@ -1,3 +1,6 @@
+# HyperLedger Fabric Workspace
+This project is a starting point for creating an empty HyperLedger network for further experiments or software development.
+
 ## HyperLedger pre-requisites installation
 TODO:
 
