@@ -5,5 +5,5 @@ export COMPOSE_HTTP_TIMEOUT=420
 # Fixing the permission problem while accessing Docker IPC
 chmod 777 /var/run/docker.sock
 
-./stop.sh
-./start.sh
+docker-compose up cli
+# docker exec -it cli bash
