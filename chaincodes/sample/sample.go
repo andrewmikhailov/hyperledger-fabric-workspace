@@ -10,11 +10,11 @@ type Sample struct {
 }
 
 func (t *Sample) Init(stub shim.ChaincodeStubInterface) peer.Response {
-	return shim.Error("Not implemented")
+	return shim.Success(nil)
 }
 
 func (t *Sample) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-	return shim.Error("Not implemented")
+	return shim.Success(nil)
 }
 
 func main() {
