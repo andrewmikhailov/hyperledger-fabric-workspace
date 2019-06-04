@@ -1,9 +1,1 @@
-# Fixing the timeout issue on Amazon machines
-export DOCKER_CLIENT_TIMEOUT=420
-export COMPOSE_HTTP_TIMEOUT=420
-
-# Fixing the permission problem while accessing Docker IPC
-chmod 777 /var/run/docker.sock
-
-docker-compose up cli
-# docker exec -it cli bash
+docker exec -it cli bash
