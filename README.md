@@ -9,10 +9,14 @@ TODO:
 ## Basic HyperLedger network configuration
 
 To build cryptography keys and network definitions, run ``build.sh``.
+
 To remove cryptography keys and network definitions, run ``clean.sh``.
+
 To start the network, run ``start.sh``.
+
 To stop it, run ``stop.sh``.
-TO restart the network, run ``restart.sh``.
+
+To restart the network, run ``restart.sh``.
 
 ## Amazon EC2 instance requirements
 The HyperLedger network requires quite a lot of memory and disk size.
