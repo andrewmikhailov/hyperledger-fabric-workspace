@@ -9,5 +9,6 @@ case $1 in
 		peer chaincode upgrade -p github.com/chaincodes/sample -n sample -v $VERSION -c '{"Args":[]}' -C mychannel
 		;;
 	invoke)
+		peer chaincode invoke -n sample -c '{"Args":["ping"]}' -C mychannel
 		;;
 esac
