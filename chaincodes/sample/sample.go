@@ -14,7 +14,9 @@ func (t *Sample) Init(stub shim.ChaincodeStubInterface) peer.Response {
 }
 
 func (t *Sample) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
-	return shim.Success(nil)
+
+	function, _ := stub.GetFunctionAndParameters()
+	return shim.Success([]byte(function))
 }
 
 func main() {
