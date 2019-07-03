@@ -23,6 +23,8 @@ The HyperLedger network requires quite a lot of memory and disk size.
 We recommend having:
 - at least 8GB of memory;
 - at least 60GB of free disk space.
+The following instance type can be used:
+- m1.xlarge.
 
 ## License agreement
 
