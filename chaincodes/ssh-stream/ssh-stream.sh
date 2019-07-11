@@ -11,4 +11,7 @@ case $1 in
 	invoke)
 		peer chaincode invoke -n ssh-stream -c '{"Args":["ping"]}' -C mychannel
 		;;
+	test)
+		CORE_PEER_ADDRESS=localhost:7052 CORE_CHAINCODE_ID_NAME=ssh-stream:$VERSION ./ssh-stream
+		;;
 esac

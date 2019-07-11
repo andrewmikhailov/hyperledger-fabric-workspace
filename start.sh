@@ -13,7 +13,13 @@ startHostShellTunnel() {
 	OUTPUT_FIFO=/tmp/docker-host-shell-tunnel-output.fifo
 
 	# Clean-up previous FIFO worker data
-	rm $INPUT_FIFO $OUTPUT_FIFO
+	if [[ -f "$INPUT_FIFO" ]]; then
+		rm $INPUT_FIFO
+	fi
+
+	if [[ -f "$OUTPUT_FIFO" ]]; then
+		rm $OUTPUT_FIFO
+	fi
 
 	# Start the FIFO worker to process incoming command requests
 	touch $INPUT_FIFO $OUTPUT_FIFO
