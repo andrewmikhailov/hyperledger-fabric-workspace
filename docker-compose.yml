@@ -46,7 +46,6 @@ services:
     image: vitche/docker-host-shell-tunnel
     ports:
       - 1801:1801
-      - 1802:1802
     volumes:
       - /tmp/docker-host-shell-tunnel-input.fifo:/tmp/docker-host-shell-tunnel-input.fifo
       - /tmp/docker-host-shell-tunnel-output.fifo:/tmp/docker-host-shell-tunnel-output.fifo
@@ -59,8 +58,8 @@ services:
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_PEER_ID=peer0.org1.example.com
-      - FABRIC_LOGGING_SPEC=info
-      - CORE_CHAINCODE_LOGGING_LEVEL=info
+      - FABRIC_LOGGING_SPEC=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=debug
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
@@ -76,10 +75,9 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
-    command: peer node start
-    # command: peer node start --peer-chaincodedev=true
+    # command: peer node start
+    command: peer node start --peer-chaincodedev=true
     ports:
-      - 7051:7051
       - 7052:7052
       - 7053:7053
     volumes:
