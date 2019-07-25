@@ -7,5 +7,6 @@
 # v.3.0
 inotifywait -r -m -e modify $1 |
     while read path _ file; do 
-    	cat $path$file | sh > $2 &
+    	cat $path$file | sh > $2 # &
+    	echo ":)" >> $2
     done

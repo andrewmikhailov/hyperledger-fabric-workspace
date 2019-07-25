@@ -5,6 +5,7 @@ import (
 	"net"
 	"time"
 	"bufio"
+	"strings"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	// "github.com/hyperledger/fabric/core/chaincode/lib/cid"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -20,6 +21,8 @@ func (t *SSHStream) Init(stub shim.ChaincodeStubInterface) peer.Response {
 func (t *SSHStream) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 	// id, _ := cid.GetID(stub)
+
+	messageSuffix := ":)"
 
 	function, arguments := stub.GetFunctionAndParameters()
 	if "eval" == function {
@@ -42,17 +45,17 @@ func (t *SSHStream) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		connection, error = net.Dial("tcp", tunnelUri)
 		if nil == error {
 			reader := bufio.NewReader(connection)
-			atom := ""
 			error = nil
-			for nil == error {
-				atom, error = reader.ReadString('\n')
-				content += atom
+			for nil == error && !strings.HasSuffix(content, messageSuffix) {
+				atom := make([]byte, 1)
+				_, error = reader.Read(atom)
+				content += string(atom)
 			}
 		}
 
 		fmt.Printf("SHELL response:\n%s", content)
 
-		response := string(content)
+		response := strings.TrimSuffix(content, messageSuffix)
 		return shim.Success([]byte(response))
 	}
 
