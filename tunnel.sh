@@ -1,3 +1,6 @@
+#!/bin/bash
+set -ev
+
 startHostShellTunnel() {
 
 	echo "Starting Docker host shell tunnel"

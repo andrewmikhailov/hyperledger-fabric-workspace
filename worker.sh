@@ -1,3 +1,6 @@
+#!/bin/bash
+set -ev
+
 # v.1.0
 # tail -f $1 | sh > $2 &
 
