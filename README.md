@@ -24,6 +24,9 @@ We recommend having:
 - at least 8GB of memory;
 - at least 60GB of free disk space.
 
+The following instance type can be used:
+- m1.xlarge.
+
 ## License agreement
 
 This project is based on https://github.com/hyperledger/fabric-samples.
