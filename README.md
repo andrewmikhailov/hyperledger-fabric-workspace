@@ -4,7 +4,20 @@ This project is a starting point for creating an empty HyperLedger network for f
 Note that this basic network is built from a network template which may not be exact as what you need.
 
 ## HyperLedger pre-requisites installation
-TODO:
+
+# Step 1 - install the latest Golang
+Before installing, you need to update Golang to the latest version. 
+Otherwise you will likely get compilation errors in chaincodes.
+
+# Step 2 - install HyperLedger Fabric SDK
+```shell
+go get github.com/hyperledger/fabric
+```
+
+# Step 3 - install HyperLedger Fabric SDK for Golang
+```shell
+go get github.com/hyperledger/fabric-sdk-go
+```
 
 ## Basic HyperLedger network configuration
 
