@@ -14,4 +14,7 @@ case $1 in
 	invoke)
 		peer chaincode invoke -n $2 -c '{"Args":["eval", "ls"]}' -C mychannel
 		;;
+	shell)
+		peer chaincode invoke -n $2 -c '{"Args":["eval", "'$3'"]}' -C mychannel
+		;;
 esac
