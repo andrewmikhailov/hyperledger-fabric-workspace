@@ -9,7 +9,7 @@ mkdir -p ~/.hfc-key-store
 
 export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
-CHANNEL_NAME=mychannel
+CHANNEL_NAME=channel
 
 # remove previous crypto material and config transactions
 rm -fr config
