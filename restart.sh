@@ -6,4 +6,5 @@ export COMPOSE_HTTP_TIMEOUT=420
 chmod 777 /var/run/docker.sock
 
 ./stop.sh
+./build.sh
 ./start.sh
