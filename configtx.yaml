@@ -248,7 +248,7 @@ Channel: &ChannelDefaults
         # Who may invoke the 'Deliver' API
         Readers:
             Type: ImplicitMeta
-            Rule: "ANY Readers"
+            Rule: "ANY Admins"
         # Who may invoke the 'Broadcast' API
         Writers:
             Type: ImplicitMeta
