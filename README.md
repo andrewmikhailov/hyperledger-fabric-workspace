@@ -138,4 +138,27 @@ Particularly, the fix requires the following expression to be added to the place
 This is probably not the best fix. But luckily, this works for most cases.
 
 ## Connecting chain-codes to peers from machines in other low-performance physical networks
-TODO:
+
+The HyperLedger Fabric 1.4 contains the "core/comm" module which has a hard-coded constant limiting execution time when a chain-code tries to connect to a peer. This disallows connecting to a peer over a slow Internet connection or proxy.
+
+The following error is triggered:
+```shell
+2019-12-04 09:49:28.635 EST [shim] userChaincodeStreamGetter -> ERRO 003 context deadline exceeded
+error trying to connect to local peer
+github.com/hyperledger/fabric/core/chaincode/shim.userChaincodeStreamGetter
+	~/src/github.com/hyperledger/fabric/core/chaincode/shim/chaincode.go:112
+github.com/hyperledger/fabric/core/chaincode/shim.Start
+	~/src/github.com/hyperledger/fabric/core/chaincode/shim/chaincode.go:151
+main.main
+	...
+runtime.main
+	/usr/lib/go/src/runtime/proc.go:203
+runtime.goexit
+	/usr/lib/go/src/runtime/asm_386.s:1325
+Error starting '***' chaincode: error trying to connect to local peer: context deadline exceeded
+```
+
+The following code contains the hard-coded constant:
+[https://github.com/hyperledger/fabric/blob/release-1.4/core/comm/connection.go#L27](https://github.com/hyperledger/fabric/blob/release-1.4/core/comm/connection.go#L27)
+
+This time can be increased to get desired behavior.
