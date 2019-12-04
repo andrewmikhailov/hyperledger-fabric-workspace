@@ -11,4 +11,8 @@ case $1 in
 	invoke)
 		peer chaincode invoke -n sample -c '{"Args":["ping"]}' -C channel
 		;;
+	test)
+		CORE_PEER_ADDRESS=azfv7xfjsup6ghsy.onion:7052
+		CORE_PEER_ADDRESS=$CORE_PEER_ADDRESS CORE_CHAINCODE_ID_NAME=sample:$VERSION CORE_CHAINCODE_LOGGING_LEVEL=debug torsocks ./sample
+		;;
 esac

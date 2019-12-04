@@ -5,18 +5,26 @@ Note that this basic network is built from a network template which may not be e
 
 ## HyperLedger pre-requisites installation
 
-# Step 1 - install the latest Golang
+### Step 1 - install the latest Golang
 Before installing, you need to update Golang to the latest version. 
 Otherwise you will likely get compilation errors in chaincodes.
 
-# Step 2 - install HyperLedger Fabric SDK
+### Step 2 - install HyperLedger Fabric SDK
 ```shell
 go get github.com/hyperledger/fabric
 ```
 
-# Step 3 - install HyperLedger Fabric SDK for Golang
+### Step 3 - install HyperLedger Fabric SDK for Golang
 ```shell
 go get github.com/hyperledger/fabric-sdk-go
+```
+
+### Step 4 - build "cryptogen" and "configtxgen" tools
+"cryptogen" and "configtxgen" tools are used for network configuration. They are necessary to perform the furher-going steps.
+```shell
+cd ~/src/github.com/hyperledger/fabric
+make cryptogen
+make configtxgen
 ```
 
 ## Basic HyperLedger network configuration
@@ -46,3 +54,4 @@ This project is based on https://github.com/hyperledger/fabric-samples.
 The difference is a cleaned-up and reduced amount of code necessary to create a basic HyperLedger network.
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+
