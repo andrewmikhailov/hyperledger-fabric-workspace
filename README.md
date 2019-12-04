@@ -55,3 +55,10 @@ The difference is a cleaned-up and reduced amount of code necessary to create a 
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
 
+# HyperLedger Fabric 1.4 code patches
+
+## Compiling chain-codes for 32-bit platforms
+TODO:
+
+## Connecting chain-codes to peers from machines in other low-performance physical networks
+TODO:
