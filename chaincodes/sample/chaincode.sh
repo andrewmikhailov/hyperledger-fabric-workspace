@@ -13,6 +13,7 @@ case $1 in
 		;;
 	test)
 		CORE_PEER_ADDRESS=azfv7xfjsup6ghsy.onion:7052
+		# CORE_PEER_ADDRESS=q5564trzm6yibazo.onion:7052
 		CORE_PEER_ADDRESS=$CORE_PEER_ADDRESS CORE_CHAINCODE_ID_NAME=sample:$VERSION CORE_CHAINCODE_LOGGING_LEVEL=debug torsocks ./sample
 		;;
 esac
