@@ -1,7 +1,7 @@
 # HyperLedger Organization virtualization strategies
 This document describes different virtualization strategies which can be applied to HyperLedger organizations.
 
-# Single Organization, Single Network, Single Kube
+## Single organization, single network, single Kube
 This strategy was designed for enterprise startups willing to speed-up their BlockChain development.
 Key concepts are:
 
