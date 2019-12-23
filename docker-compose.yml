@@ -77,6 +77,7 @@ services:
     # command: peer node start
     command: peer node start --peer-chaincodedev=true
     ports:
+      - 7051:7051
       - 7052:7052
       - 7053:7053
     volumes:
