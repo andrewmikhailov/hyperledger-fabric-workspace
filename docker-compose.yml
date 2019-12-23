@@ -16,6 +16,7 @@ services:
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/org1.example.com/users/:/etc/hyperledger/users
     container_name: ca.example.com
     networks:
       - basic
