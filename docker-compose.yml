@@ -16,7 +16,8 @@ services:
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-      - ./crypto-config/peerOrganizations/org1.example.com/users/:/etc/hyperledger/users
+      # Cryptography configuration is mapped to be able to generate keys from CA
+      - ./crypto-config/:/etc/hyperledger/crypto-config
     container_name: ca.example.com
     networks:
       - basic
@@ -41,6 +42,8 @@ services:
       - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/:/etc/hyperledger/msp/peerOrg1
     networks:
       - basic
+    depends_on:
+      - ca.example.com
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
