@@ -24,6 +24,12 @@ if [ "$?" -ne 0 ]; then
   exit 1
 fi
 
+# Register CA users before starting anything else
+docker-compose -f docker-compose.yml up -d ca.example.com
+# It takes some time for CA to "handle" the first start and start processing certificates
+sleep 7
+./ca.sh
+
 # Generate genesis block for orderer
 configtxgen -profile OneOrgOrdererGenesis -outputBlock ./config/genesis.block -channelID system
 if [ "$?" -ne 0 ]; then
