@@ -48,7 +48,34 @@ We recommend having:
 The following instance type can be used:
 - m1.xlarge.
 
-## License agreement
+# Chain-codes installer Docker definitions
+The chain-code installer Web API requires HyperLedger network configuration files:
+- MSP certificates;
+- chain-code binaries;
+- network connection definition file.
+
+These files are mapped as volumes to the API container.
+ 
+```yaml
+installer:
+    container_name: installer
+    image: vitche/hyperledger-chaincode-installer
+    volumes:
+      - ./chaincodes/sample:/applications/hyperledger-chaincode-installer/chaincodes/sample
+      - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-installer/networks/Org1MSP/msp
+      - ./connection.yaml:/applications/hyperledger-chaincode-installer/networks/Org1MSP/connection.yaml
+    networks:
+      - basic
+    ports:
+      - 3001:3000
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - couchdb
+      - ca.example.com
+```
+
+# License agreement
 
 This project is based on https://github.com/hyperledger/fabric-samples.
 The difference is a cleaned-up and reduced amount of code necessary to create a basic HyperLedger network.
