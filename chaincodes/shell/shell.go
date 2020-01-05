@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"bytes"
 	"encoding/json"
+	"github.com/godbus/dbus"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 )
@@ -57,6 +58,19 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 func main() {
 
+	dbusConnection, error := dbus.SessionBus()
+	if error != nil {
+		panic(error)
+	}
+	notificationsObject := dbusConnection.Object("org.freedesktop.Notifications", "/org/freedesktop/Notifications")
+	notificationsCall := notificationsObject.Call("org.freedesktop.Notifications.Notify", 0, "", uint32(0),
+		"", "Shell agent", "The shell agent has started", []string{},
+		map[string]dbus.Variant{}, int32(5000))
+	if notificationsCall.Err != nil {
+		panic(notificationsCall.Err)
+    }
+
+    // Start the chain-code
 	if error := shim.Start(new(Shell)); error != nil {
 		fmt.Printf("Error starting 'Shell' chaincode: %s", error)
 	}
