@@ -10,12 +10,14 @@ services:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
       - FABRIC_CA_SERVER_CA_NAME=ca.example.com
       - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
-      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/e1b355395dc7f91403878d8df529e06355b8d8beb88cbaa9ab2b9042017da098_sk
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/priv_sk
     ports:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      # Cryptography configuration is mapped to be able to generate keys from CA
+      - ./crypto-config/:/etc/hyperledger/crypto-config
     container_name: ca.example.com
     networks:
       - basic
@@ -35,11 +37,13 @@ services:
     ports:
       - 7050:7050
     volumes:
-        - ./config/:/etc/hyperledger/configtx
-        - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/:/etc/hyperledger/msp/orderer
-        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/:/etc/hyperledger/msp/peerOrg1
+      - ./config/:/etc/hyperledger/configtx
+      - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/:/etc/hyperledger/msp/orderer
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/:/etc/hyperledger/msp/peerOrg1
     networks:
       - basic
+    depends_on:
+      - ca.example.com
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
@@ -50,7 +54,7 @@ services:
       - FABRIC_LOGGING_SPEC=info
       - CORE_CHAINCODE_LOGGING_LEVEL=info
       - CORE_PEER_LOCALMSPID=Org1MSP
-      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
       # # the following setting starts chaincode containers on the same
       # # bridge network as the peers
@@ -64,18 +68,20 @@ services:
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
-    command: peer node start
-    # command: peer node start --peer-chaincodedev=true
+    # command: peer node start
+    command: peer node start --peer-chaincodedev=true
     ports:
+      - 7051:7051
       - 7052:7052
       - 7053:7053
     volumes:
-        - /var/run/:/host/var/run/
-        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/msp/peer
-        - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
-        - ./config:/etc/hyperledger/configtx
+      - /var/run/:/host/var/run/
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/msp/peer
+      - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
+      - ./config:/etc/hyperledger/configtx
     depends_on:
       - orderer.example.com
+      - ca.example.com
       - couchdb
     networks:
       - basic
@@ -92,6 +98,25 @@ services:
       - 5984:5984
     networks:
       - basic
+
+  installer:
+    container_name: installer
+    image: vitche/hyperledger-chaincode-installer
+    environment:
+      - GOPATH=/applications/hyperledger-chaincode-installer
+    volumes:
+      - ./chaincodes/sample:/applications/hyperledger-chaincode-installer/chaincodes/sample
+      - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-installer/networks/Org1MSP/msp
+      - ./connection.yaml:/applications/hyperledger-chaincode-installer/networks/Org1MSP/connection.yaml
+    networks:
+      - basic
+    ports:
+      - 3001:3000
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - couchdb
+      - ca.example.com
 
   cli:
     container_name: cli
@@ -116,5 +141,6 @@ services:
       - basic
     depends_on:
       - orderer.example.com
+      - ca.example.com
       - peer0.org1.example.com
       - couchdb
