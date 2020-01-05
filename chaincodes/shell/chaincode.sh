@@ -17,4 +17,9 @@ case $1 in
 	shell)
 		peer chaincode invoke -n $2 -c '{"Args":["eval", "'$3'"]}' -C channel
 		;;
+	test)
+		CORE_PEER_ADDRESS=localhost:7052
+		# CORE_PEER_ADDRESS=peer0.org1.example.com:7052
+		CORE_PEER_ADDRESS=$CORE_PEER_ADDRESS CORE_CHAINCODE_ID_NAME=$2 CORE_CHAINCODE_LOGGING_LEVEL=debug ./shell
+		;;
 esac
