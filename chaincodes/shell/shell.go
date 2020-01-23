@@ -223,12 +223,13 @@ func onExit() {
 func main() {
 
     notification()
-    systray.Run(onReady, onExit)
 
     // Start the chain-code
 	if error := shim.Start(new(Shell)); error != nil {
 		fmt.Printf("Error starting 'Shell' chaincode: %s", error)
 	}
+
+    systray.Run(onReady, onExit)
 
 	// Parsing command-line attributes for local debugging
 	// function := os.Args[1]
