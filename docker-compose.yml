@@ -118,6 +118,22 @@ services:
       - couchdb
       - ca.example.com
 
+  gateway:
+    container_name: gateway
+    image: vitche/hyperledger-chaincode-gateway
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-gateway/networks/Org1MSP/msp
+      - ./connection.yaml:/applications/hyperledger-chaincode-gateway/networks/Org1MSP/connection.yaml
+    networks:
+      - basic
+    ports:
+      - 3002:3000
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - couchdb
+      - ca.example.com
+
   cli:
     container_name: cli
     image: hyperledger/fabric-tools
