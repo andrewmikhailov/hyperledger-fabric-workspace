@@ -26,20 +26,19 @@ services:
     container_name: orderer.example.com
     image: hyperledger/fabric-orderer
     environment:
-      - FABRIC_LOGGING_SPEC=info
+      - FABRIC_LOGGING_SPEC=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
       - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
-      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
+      - ORDERER_GENERAL_LOCALMSPID=Org1MSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/users/Admin@org1.example.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
     command: orderer
     ports:
       - 7050:7050
     volumes:
       - ./config/:/etc/hyperledger/configtx
-      - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/:/etc/hyperledger/msp/orderer
-      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/:/etc/hyperledger/msp/peerOrg1
+      - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
     networks:
       - basic
     depends_on:
@@ -51,7 +50,7 @@ services:
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_PEER_ID=peer0.org1.example.com
-      - FABRIC_LOGGING_SPEC=info
+      - FABRIC_LOGGING_SPEC=debug
       - CORE_CHAINCODE_LOGGING_LEVEL=info
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp
@@ -76,7 +75,6 @@ services:
       - 7053:7053
     volumes:
       - /var/run/:/host/var/run/
-      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/msp/peer
       - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
       - ./config:/etc/hyperledger/configtx
     depends_on:
@@ -106,6 +104,7 @@ services:
       - GOPATH=/applications/hyperledger-chaincode-installer
     volumes:
       - ./chaincodes/sample:/applications/hyperledger-chaincode-installer/chaincodes/sample
+      - ./chaincodes/shell:/applications/hyperledger-chaincode-installer/chaincodes/shell
       - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-installer/networks/Org1MSP/msp
       - ./connection.yaml:/applications/hyperledger-chaincode-installer/networks/Org1MSP/connection.yaml
     networks:
@@ -141,7 +140,7 @@ services:
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - FABRIC_LOGGING_SPEC=info
+      - FABRIC_LOGGING_SPEC=debug
       - CORE_PEER_ID=cli
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
       - CORE_PEER_LOCALMSPID=Org1MSP
