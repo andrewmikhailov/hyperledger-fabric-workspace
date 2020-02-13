@@ -5,13 +5,11 @@ HTTP POST API end-point.
 Installs and packages a chain-code using the MSP files on the server file-system, 
 using administrator credentials and chain-code definition taken from the server file-system. 
 
-MSP identifier maps into the folder containing certificates.
-
-Chain-code name maps into the folder containing the chain-code definition.
-
-Chain-code identifier argument is ignored.
-
-Chain-code version should be increased while updating a chain-code with the given identifier.
+- MSP identifier maps into the folder containing certificates.
+- Administrator credentials to authenticate into the certificate authority.
+- Chain-code name maps into the folder containing the chain-code definition.
+- Chain-code identifier argument is ignored.
+- Chain-code version should be increased while updating a chain-code with the given identifier.
 
 ### Request headers
 Nest.js requires the content type header to be set to properly recognize POST requests.
@@ -76,3 +74,42 @@ curl -X GET -i http://localhost:3001/chainCode/package/c89bc6c0652f4bb09cdc625b5
 ```
 ### Response
 Binary file download when the chain-code package ZIP-file exists.
+
+## /chainCode/instantiate
+
+HTTP POST API end-point. 
+
+Initializes a previously installed chain-code using the MSP files on the server file-system, 
+using administrator credentials and chain-code definition. 
+- MSP identifier maps into the folder containing certificates.
+- Administrator credentials to authenticate into the certificate authority.
+- Chain-code name contains the chain-code name (identifier) under which it was installed to the peer.
+- Chain-code version should be increased while updating a chain-code with the given identifier.
+
+### Request headers
+Nest.js requires the content type header to be set to properly recognize POST requests.
+```json
+Content-Type: application/json
+```
+
+### POST Request
+```json
+{
+  "msp": {
+    "identifier": "Org1MSP"
+  },
+  "administrator": {
+    "logOn": "Admin@org1.example.com",
+    "password": "adminpw"
+  },
+  "chainCode": {
+    "name": "b62b3cb05bbb4d2ab27bb1e67137ea3b",
+    "version": "1"
+  }
+}
+```
+
+### Response
+As a result:
+- "true" on success;
+- "false" on a failure.
