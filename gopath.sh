@@ -1,3 +1,3 @@
 #!/bin/bash
-export GOROOT=/usr/lib/go
+export GOROOT=/usr/local/go
 export GOPATH=/data/PROJECTS

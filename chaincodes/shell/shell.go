@@ -215,6 +215,11 @@ func onReady() {
     systray.SetTitle("Shell agent")
     systray.SetTooltip("Shell agent")
     /*mAbout :=*/ systray.AddMenuItem("About", "About the shell agent")
+
+    // Start the chain-code
+	if error := shim.Start(new(Shell)); error != nil {
+		fmt.Printf("Error starting 'Shell' chaincode: %s", error)
+	}
 }
 
 func onExit() {
@@ -223,11 +228,6 @@ func onExit() {
 func main() {
 
     notification()
-
-    // Start the chain-code
-	if error := shim.Start(new(Shell)); error != nil {
-		fmt.Printf("Error starting 'Shell' chaincode: %s", error)
-	}
 
     systray.Run(onReady, onExit)
 
