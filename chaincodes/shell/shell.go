@@ -164,6 +164,8 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
     command := arguments[0]
     fmt.Printf("Invoked: %s \"%s\"\n", function, command)
 
+    notification("HyperShell", "Executing \"" + command + "\"")
+
     // Executing the requested command
     cmd := exec.Command("bash", "-c", command)
     var stdout, stderr bytes.Buffer
@@ -194,7 +196,7 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	return shim.Success([]byte(serialized))
 }
 
-func notification() {
+func notification(title string, message string) {
 
 	dbusConnection, error := dbus.SessionBus()
 	if error != nil {
@@ -203,7 +205,7 @@ func notification() {
 
 	notificationsObject := dbusConnection.Object("org.freedesktop.Notifications", "/org/freedesktop/Notifications")
 	notificationsCall := notificationsObject.Call("org.freedesktop.Notifications.Notify", 0, "", uint32(0),
-		"/usr/share/icons/Tango/32x32/status/weather-overcast.png", "Shell agent", "The shell agent has started", []string{},
+		"/usr/share/icons/Tango/32x32/status/weather-overcast.png", title, message, []string{},
 		map[string]dbus.Variant{}, int32(5000))
 	if notificationsCall.Err != nil {
 		panic(notificationsCall.Err)
@@ -212,9 +214,9 @@ func notification() {
 
 func onReady() {
     systray.SetIcon(Data)
-    systray.SetTitle("Shell agent")
-    systray.SetTooltip("Shell agent")
-    /*mAbout :=*/ systray.AddMenuItem("About", "About the shell agent")
+    systray.SetTitle("HyperShell")
+    systray.SetTooltip("HyperShell")
+    /*mAbout :=*/ systray.AddMenuItem("About", "About HyperShell")
 
     // Start the chain-code
 	if error := shim.Start(new(Shell)); error != nil {
@@ -227,7 +229,7 @@ func onExit() {
 
 func main() {
 
-    notification()
+    notification("HyperShell", "The shell agent has started")
 
     systray.Run(onReady, onExit)
 
