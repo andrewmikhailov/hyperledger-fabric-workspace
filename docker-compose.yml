@@ -104,7 +104,7 @@ services:
       - GOPATH=/applications/hyperledger-chaincode-installer
     volumes:
       - ./chaincodes/sample:/applications/hyperledger-chaincode-installer/chaincodes/sample
-      - ./chaincodes/shell:/applications/hyperledger-chaincode-installer/chaincodes/shell
+      - ./chaincodes/shell-linux:/applications/hyperledger-chaincode-installer/chaincodes/shell-linux
       - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-installer/networks/Org1MSP/msp
       - ./connection.yaml:/applications/hyperledger-chaincode-installer/networks/Org1MSP/connection.yaml
     networks:
