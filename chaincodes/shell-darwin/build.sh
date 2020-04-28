@@ -5,3 +5,5 @@ fi
 
 # MAC OS build
 GOOS=darwin GOARCH=amd64 go build
+
+mv shell-darwin shell

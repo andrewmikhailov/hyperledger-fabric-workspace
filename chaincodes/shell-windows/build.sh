@@ -5,3 +5,5 @@ fi
 
 # MAC OS build
 GOOS=windows GOARCH=386 go build
+
+mv shell-windows.exe shell.exe
