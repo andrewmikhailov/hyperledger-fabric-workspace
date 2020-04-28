@@ -5,5 +5,3 @@ fi
 
 # MAC OS build
 GOOS=linux GOARCH=arm GOARM=5 go build
-
-mv shell-raspberry shell
