@@ -4,6 +4,8 @@ import (
 	// "os"
 	"os/exec"
 	"fmt"
+	"time"
+	"strconv"
 	"bytes"
 	"encoding/json"
 	"github.com/godbus/dbus"
@@ -179,7 +181,8 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
     normalOutput, errorOutput := string(stdout.Bytes()), string(stderr.Bytes())
 
     // Rendering the result
-    response := make(map[string]string, 2)
+    response := make(map[string]string, 3)
+    response["command"] = command
     if "" != normalOutput {
         response["output"] = normalOutput
     }
@@ -192,6 +195,10 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
         return shim.Error(errorString)
     }
     fmt.Println("Result:", string(serialized))
+
+    // Save "command" and "serialized" to the ledger state
+    key := strconv.FormatInt(time.Now().UnixNano(), 10)
+    stub.PutState(key, serialized)
 
 	return shim.Success([]byte(serialized))
 }
