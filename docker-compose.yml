@@ -127,13 +127,34 @@ services:
     container_name: gateway
     image: vitche/hyperledger-chaincode-gateway
     restart: always
+    environment:
+      - PORT=3002
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-gateway/networks/Org1MSP/msp
       - ./connection.yaml:/applications/hyperledger-chaincode-gateway/networks/Org1MSP/connection.yaml
     networks:
       - basic
     ports:
-      - 3002:3000
+      - 3002:3002
+    depends_on:
+      - orderer.example.com
+      - peer0.org1.example.com
+      - couchdb
+      - ca.example.com
+
+  scheduler:
+    container_name: scheduler
+    image: vitche/hyperledger-chaincode-scheduler
+    restart: always
+    environment:
+      - PORT=3003
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-scheduler/networks/Org1MSP/msp
+      - ./connection.yaml:/applications/hyperledger-chaincode-scheduler/networks/Org1MSP/connection.yaml
+    networks:
+      - basic
+    ports:
+      - 3003:3003
     depends_on:
       - orderer.example.com
       - peer0.org1.example.com
