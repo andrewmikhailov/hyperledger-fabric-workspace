@@ -13,6 +13,7 @@ BINARY_NAME=./shell-linux
 CHAINCODE_ID_NAME={CHAINCODE_ID_NAME}
 CHAINCODE_VERSION={CHAINCODE_VERSION}
 PEER_ADDRESS={PEER_ADDRESS}
+export TOKENIZER_ENDPOINT=http://softethica.com:3007/keyChain/password
 
 # Methods
 start() {

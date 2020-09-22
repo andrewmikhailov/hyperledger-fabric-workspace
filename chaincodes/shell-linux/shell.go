@@ -28,7 +28,10 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
     fmt.Printf("Invoked: %s \"%s\"\n", function, command)
 
     // Executing the requested command
-    cmd := exec.Command("bash", "-c", command)
+    // v.1.0
+    // cmd := exec.Command("bash", "-c", command)
+    // v.2.0
+    cmd := exec.Command("./eval.sh", command)
     var stdout, stderr bytes.Buffer
     cmd.Stdout = &stdout
     cmd.Stderr = &stderr
