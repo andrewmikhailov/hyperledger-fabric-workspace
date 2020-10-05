@@ -3,5 +3,5 @@ if [ ! -f shell.go ]; then
   ln -s ../shell-linux/shell.go
 fi
 
-# MAC OS build
+# Windows build
 GOOS=windows GOARCH=386 go build
