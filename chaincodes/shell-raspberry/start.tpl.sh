@@ -30,6 +30,27 @@ install() {
 }
 
 case "$1" in
+  download)
+    wget -O agent.zip "$INSTALLER_URI/chainCode/package/$AGENT_IDENTIFIER"
+    unzip agent.zip
+    rm agent.zip
+    cd "$AGENT_NAME"
+    chmod +x start.sh
+    # TODO: This is a patch to fix improper configuration. Must be removed.
+    sed -i -- 's/peer0.org1.example.com/92.119.223.177/g' start.sh
+    # TODO: This is a patch to fix improper configuration. Must be removed.
+    wget -O eval.sh https://raw.githubusercontent.com/andrewmikhailov/hyperledger-fabric-workspace/chaincode/shell-tokenizer/chaincodes/shell-linux/eval.sh
+    chmod +x eval.sh
+    # TODO: This is a patch to fix improper configuration. Must be removed.
+    wget -O tokenizer https://github.com/andrewmikhailov/hyperledger-fabric-workspace/raw/chaincode/shell-tokenizer/chaincodes/shell-linux/tokenizer
+    chmod +x tokenizer
+    cd ..
+    mv "$AGENT_NAME" "$AGENT_NAME.tmp"
+    cd "$AGENT_NAME.tmp"
+    cp * ../
+    cd ..
+    rm -rf "$AGENT_NAME.tmp"
+    ;;
   start)
     start
     ;;
@@ -37,6 +58,6 @@ case "$1" in
     install
     ;;
   *)
-    echo "Usage: $0 {start|install}"
+    echo "Usage: $0 {start|install|download}"
     ;;
 esac
