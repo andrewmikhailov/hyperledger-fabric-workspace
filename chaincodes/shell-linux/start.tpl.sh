@@ -34,19 +34,19 @@ case "$1" in
     wget -O agent.zip "$INSTALLER_URI/chainCode/package/$AGENT_IDENTIFIER"
     unzip agent.zip
     rm agent.zip
-    cd "$AGENT_NAME"
+    cd "$AGENT_NAME" || exit
     chmod +x start.sh
     # TODO: This is a patch to fix improper configuration. Must be removed.
-    sed -i -- 's/peer0.org1.example.com/92.119.223.177/g' start.sh
+    # sed -i -- 's/peer0.org1.example.com/92.119.223.177/g' start.sh
     # TODO: This is a patch to fix improper configuration. Must be removed.
-    wget -O eval.sh https://raw.githubusercontent.com/andrewmikhailov/hyperledger-fabric-workspace/chaincode/shell-tokenizer/chaincodes/shell-linux/eval.sh
+    # wget -O eval.sh https://raw.githubusercontent.com/andrewmikhailov/hyperledger-fabric-workspace/chaincode/shell-tokenizer/chaincodes/shell-linux/eval.sh
     chmod +x eval.sh
     # TODO: This is a patch to fix improper configuration. Must be removed.
-    wget -O tokenizer https://github.com/andrewmikhailov/hyperledger-fabric-workspace/raw/chaincode/shell-tokenizer/chaincodes/shell-linux/tokenizer
+    # wget -O tokenizer https://github.com/andrewmikhailov/hyperledger-fabric-workspace/raw/chaincode/shell-tokenizer/chaincodes/shell-linux/tokenizer
     chmod +x tokenizer
     cd ..
     mv "$AGENT_NAME" "$AGENT_NAME.tmp"
-    cd "$AGENT_NAME.tmp"
+    cd "$AGENT_NAME.tmp" || exit
     cp * ../
     cd ..
     rm -rf "$AGENT_NAME.tmp"
