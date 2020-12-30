@@ -8,18 +8,31 @@
 # Description:       HyperShell agent
 ### END INIT INFO
 
-# Settings
+## Settings
 FOLDER_NAME=$(dirname $(readlink -f "$0"))
 BINARY_NAME="$FOLDER_NAME/shell-linux"
-CHAINCODE_ID_NAME={CHAINCODE_ID_NAME}
-CHAINCODE_VERSION={CHAINCODE_VERSION}
-PEER_ADDRESS={PEER_ADDRESS}
+# Whether the environment variable is not defined
+if test -z "$CHAINCODE_ID_NAME"
+then
+  CHAINCODE_ID_NAME={CHAINCODE_ID_NAME}
+fi
+# Whether the environment variable is not defined
+if test -z "$CHAINCODE_VERSION"
+then
+  CHAINCODE_VERSION={CHAINCODE_VERSION}
+fi
+# Whether the environment variable is not defined
+if test -z "$PEER_ADDRESS"
+then
+  PEER_ADDRESS={PEER_ADDRESS}
+fi
 export TOKENIZER_ENDPOINT=http://softethica.com:3007/keyChain/password
 
 # Methods
 start() {
   CORE_PEER_ADDRESS=$PEER_ADDRESS CORE_CHAINCODE_ID_NAME=$CHAINCODE_ID_NAME:$CHAINCODE_VERSION CORE_CHAINCODE_LOGGING_LEVEL=debug $BINARY_NAME
 }
+
 install() {
   link=/etc/init.d/hyshd
   if [ -f $link ] ; then

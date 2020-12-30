@@ -227,7 +227,7 @@ func onReady() {
 
     // Start the chain-code
 	if error := shim.Start(new(Shell)); error != nil {
-		fmt.Printf("Error starting 'Shell' chaincode: %s", error)
+		fmt.Printf("Chaincode runtime error: %s", error)
 	}
 }
 

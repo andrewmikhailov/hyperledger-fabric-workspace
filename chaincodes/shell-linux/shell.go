@@ -69,13 +69,15 @@ func onReady() {
 
     // Start the chain-code
 	if error := shim.Start(new(Shell)); error != nil {
-		fmt.Printf("Error starting 'Shell' chaincode: %s", error)
+		fmt.Printf("Chaincode runtime error: %s", error)
 	}
 }
 
 func main() {
 
-    onReady()
+    for {
+        onReady()
+    }
 
 	// Parsing command-line attributes for local debugging
 	// function := os.Args[1]
