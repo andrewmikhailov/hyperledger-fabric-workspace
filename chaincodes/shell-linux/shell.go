@@ -67,6 +67,12 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 func onReady() {
 
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println("Recovered in onReady", r)
+        }
+    }()
+
     // Start the chain-code
 	if error := shim.Start(new(Shell)); error != nil {
 		fmt.Printf("Chaincode runtime error: %s", error)
