@@ -1,9 +1,10 @@
 package main
 
 import (
-    // "os"
+    "os"
 	"os/exec"
 	"fmt"
+	"flag"
 	"time"
 	"strconv"
 	"bytes"
@@ -68,9 +69,14 @@ func (t *Shell) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 func onReady() {
 
     defer func() {
+
+        // Recover from error
         if r := recover(); r != nil {
             fmt.Println("Recovered in onReady", r)
         }
+
+        // Reset the flag set
+        flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
     }()
 
     // Start the chain-code

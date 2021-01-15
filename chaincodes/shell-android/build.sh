@@ -9,4 +9,4 @@ if [ ! -f eval.sh ]; then
 fi
 
 # Android build
-GOOS=android GOARCH=arm CGO_ENABLED=1 CC=arm-linux-gnueabi-gcc go build
+# GOOS=android GOARCH=arm CGO_ENABLED=1 CC=arm-linux-gnueabi-gcc go build
