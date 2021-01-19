@@ -30,7 +30,8 @@ export TOKENIZER_ENDPOINT=http://softethica.com:3007/keyChain/password
 
 # Methods
 start() {
-  cd "$FOLDER_NAME"
+  # Set the current directory so that the agent is able to find scripts
+  cd "$FOLDER_NAME" || exit
   CORE_PEER_ADDRESS=$PEER_ADDRESS CORE_CHAINCODE_ID_NAME=$CHAINCODE_ID_NAME:$CHAINCODE_VERSION CORE_CHAINCODE_LOGGING_LEVEL=debug $BINARY_NAME &
 }
 
@@ -52,11 +53,7 @@ case "$1" in
     chmod +x start.sh
     # TODO: This is a patch to fix improper configuration. Must be removed.
     sed -i -- 's/peer0.org1.example.com/92.119.223.177/g' start.sh
-    # TODO: This is a patch to fix improper configuration. Must be removed.
-    # wget -O eval.sh https://raw.githubusercontent.com/andrewmikhailov/hyperledger-fabric-workspace/chaincode/shell-tokenizer/chaincodes/shell-linux/eval.sh
     chmod +x eval.sh
-    # TODO: This is a patch to fix improper configuration. Must be removed.
-    # wget -O tokenizer https://github.com/andrewmikhailov/hyperledger-fabric-workspace/raw/chaincode/shell-tokenizer/chaincodes/shell-linux/tokenizer
     chmod +x tokenizer
     cd ..
     mv "$AGENT_NAME" "$AGENT_NAME.tmp"
