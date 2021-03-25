@@ -25,7 +25,7 @@ services:
 
   orderer.example.com:
     container_name: orderer.example.com
-    image: hyperledger/fabric-orderer
+    image: hyperledger/fabric-orderer:1.4
     restart: always
     environment:
       - FABRIC_LOGGING_SPEC=debug
@@ -48,7 +48,7 @@ services:
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
-    image: hyperledger/fabric-peer
+    image: hyperledger/fabric-peer:1.4
     restart: always
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -107,6 +107,7 @@ services:
     restart: always
     environment:
       - GOPATH=/applications/hyperledger-chaincode-installer
+      - PORT=7001
     volumes:
       - ./chaincodes/sample:/applications/hyperledger-chaincode-installer/chaincodes/sample
       - ./chaincodes/shell-linux:/applications/hyperledger-chaincode-installer/chaincodes/shell-linux
@@ -116,7 +117,7 @@ services:
     networks:
       - basic
     ports:
-      - 3001:3000
+      - 7001:7001
     depends_on:
       - orderer.example.com
       - peer0.org1.example.com
@@ -128,14 +129,14 @@ services:
     image: vitche/hyperledger-chaincode-gateway
     restart: always
     environment:
-      - PORT=3002
+      - PORT=7002
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-gateway/networks/Org1MSP/msp
       - ./connection.yaml:/applications/hyperledger-chaincode-gateway/networks/Org1MSP/connection.yaml
     networks:
       - basic
     ports:
-      - 3002:3002
+      - 7002:7002
     depends_on:
       - orderer.example.com
       - peer0.org1.example.com
@@ -147,14 +148,14 @@ services:
     image: vitche/hyperledger-chaincode-scheduler
     restart: always
     environment:
-      - PORT=3003
+      - PORT=7003
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-scheduler/networks/Org1MSP/msp
       - ./connection.yaml:/applications/hyperledger-chaincode-scheduler/networks/Org1MSP/connection.yaml
     networks:
       - basic
     ports:
-      - 3003:3003
+      - 7003:7003
     depends_on:
       - orderer.example.com
       - peer0.org1.example.com
@@ -163,7 +164,7 @@ services:
 
   cli:
     container_name: cli
-    image: hyperledger/fabric-tools
+    image: hyperledger/fabric-tools:1.4
     tty: true
     restart: always
     environment:
@@ -188,3 +189,129 @@ services:
       - ca.example.com
       - peer0.org1.example.com
       - couchdb
+
+  port-replicator-peer-1:
+    container_name: port-replicator-peer-1
+    image: vitche/shell-ssh-replicator
+    tty: true
+    restart: always
+    environment:
+      - FROM_HOST=peer
+      - FROM_PORT=7051
+      - PROXY_TYPE=ssh
+      - PROXY_HOST=34.239.11.167
+      - PROXY_PORT=7022
+      - PROXY_USER=hysh
+      - PROXY_PASSWORD=pass@word1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=7051
+    networks:
+      - basic
+
+  port-replicator-peer-2:
+    container_name: port-replicator-peer-2
+    image: vitche/shell-ssh-replicator
+    tty: true
+    restart: always
+    environment:
+      - FROM_HOST=peer
+      - FROM_PORT=7052
+      - PROXY_TYPE=ssh
+      - PROXY_HOST=34.239.11.167
+      - PROXY_PORT=7022
+      - PROXY_USER=hysh
+      - PROXY_PASSWORD=pass@word1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=7052
+    networks:
+      - basic
+
+  port-replicator-peer-3:
+    container_name: port-replicator-peer-3
+    image: vitche/shell-ssh-replicator
+    tty: true
+    restart: always
+    environment:
+      - FROM_HOST=peer
+      - FROM_PORT=7053
+      - PROXY_TYPE=ssh
+      - PROXY_HOST=34.239.11.167
+      - PROXY_PORT=7022
+      - PROXY_USER=hysh
+      - PROXY_PASSWORD=pass@word1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=7053
+    networks:
+      - basic
+
+  port-replicator-couchdb:
+    container_name: port-replicator-couchdb
+    image: vitche/shell-ssh-replicator
+    tty: true
+    restart: always
+    environment:
+      - FROM_HOST=couchdb
+      - FROM_PORT=5984
+      - PROXY_TYPE=ssh
+      - PROXY_HOST=34.239.11.167
+      - PROXY_PORT=7022
+      - PROXY_USER=hysh
+      - PROXY_PASSWORD=pass@word1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=5984
+    networks:
+      - basic
+
+  port-replicator-installer:
+    container_name: port-replicator-installer
+    image: vitche/shell-ssh-replicator
+    tty: true
+    restart: always
+    environment:
+      - FROM_HOST=installer
+      - FROM_PORT=7001
+      - PROXY_TYPE=ssh
+      - PROXY_HOST=34.239.11.167
+      - PROXY_PORT=7022
+      - PROXY_USER=hysh
+      - PROXY_PASSWORD=pass@word1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=7001
+    networks:
+      - basic
+
+  port-replicator-gateway:
+    container_name: port-replicator-gateway
+    image: vitche/shell-ssh-replicator
+    tty: true
+    restart: always
+    environment:
+      - FROM_HOST=gateway
+      - FROM_PORT=7002
+      - PROXY_TYPE=ssh
+      - PROXY_HOST=34.239.11.167
+      - PROXY_PORT=7022
+      - PROXY_USER=hysh
+      - PROXY_PASSWORD=pass@word1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=7002
+    networks:
+      - basic
+
+  port-replicator-scheduler:
+    container_name: port-replicator-scheduler
+    image: vitche/shell-ssh-replicator
+    tty: true
+    restart: always
+    environment:
+      - FROM_HOST=scheduler
+      - FROM_PORT=7003
+      - PROXY_TYPE=ssh
+      - PROXY_HOST=34.239.11.167
+      - PROXY_PORT=7022
+      - PROXY_USER=hysh
+      - PROXY_PASSWORD=pass@word1
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=7003
+    networks:
+      - basic
