@@ -196,7 +196,7 @@ services:
     tty: true
     restart: always
     environment:
-      - FROM_HOST=peer
+      - FROM_HOST=peer0.org1.example.com
       - FROM_PORT=7051
       - PROXY_TYPE=ssh
       - PROXY_HOST=34.239.11.167
@@ -214,7 +214,7 @@ services:
     tty: true
     restart: always
     environment:
-      - FROM_HOST=peer
+      - FROM_HOST=peer0.org1.example.com
       - FROM_PORT=7052
       - PROXY_TYPE=ssh
       - PROXY_HOST=34.239.11.167
@@ -232,7 +232,7 @@ services:
     tty: true
     restart: always
     environment:
-      - FROM_HOST=peer
+      - FROM_HOST=peer0.org1.example.com
       - FROM_PORT=7053
       - PROXY_TYPE=ssh
       - PROXY_HOST=34.239.11.167
