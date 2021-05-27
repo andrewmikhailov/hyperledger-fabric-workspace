@@ -52,7 +52,7 @@ case "$1" in
     cd "$AGENT_NAME" || exit
     chmod +x start.sh
     # TODO: This is a patch to fix improper configuration. Must be removed.
-    sed -i -- "s/peer0.org1.example.com/$PEER_ADDRESS/g" start.sh
+    sed -i -- "s/peer0.org1.example.com:7052/$PEER_ADDRESS/g" start.sh
     chmod +x eval.sh
     chmod +x tokenizer
     cd ..
