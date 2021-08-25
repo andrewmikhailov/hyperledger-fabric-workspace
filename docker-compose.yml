@@ -189,3 +189,13 @@ services:
       - ca.example.com
       - peer0.org1.example.com
       - couchdb
+
+  ide:
+    container_name: ide
+    image: vitche/python-notebook-hysh
+    ports:
+      - 8888:8888
+    tty: true
+    restart: always
+    networks:
+      - basic
