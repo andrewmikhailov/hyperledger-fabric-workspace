@@ -80,6 +80,7 @@ services:
       - /var/run/:/host/var/run/
       - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
       - ./config:/etc/hyperledger/configtx
+      - ./config:/opt/gopath/src/github.com/hyperledger/fabric
     depends_on:
       - orderer.example.com
       - ca.example.com
@@ -127,6 +128,7 @@ services:
       - ./crypto-config/peerOrganizations/org1.example.com/users:/etc/hyperledger/msp/users
       - ./crypto-config/peerOrganizations/org1.example.com/peers:/etc/hyperledger/msp/peers
       - ./config:/etc/hyperledger/configtx
+      - ./config:/opt/gopath/src/github.com/hyperledger/fabric
     depends_on:
       - orderer.example.com
       - ca.example.com
