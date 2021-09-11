@@ -136,6 +136,21 @@ services:
     networks:
       - basic
 
+  tls:
+    image: vitche/nginx-stream-docker
+    volumes:
+      - ./nginx/nginx.conf:/tmp/nginx.conf
+      - ./crypto-config/peerOrganizations/org1.example.com/peers:/etc/hyperledger/msp/peers
+    environment:
+      - PEER_ADDRESS=peer0.org1.example.com:7052
+    command: /bin/bash -c "envsubst < /tmp/nginx.conf > /opt/nginx/conf/nginx.conf && /opt/nginx/sbin/nginx -g 'daemon off;'"
+    ports:
+      - 7452:7452
+    depends_on:
+      - peer0.org1.example.com
+    networks:
+      - basic
+
   couchdb:
     container_name: couchdb
     image: hyperledger/fabric-couchdb
