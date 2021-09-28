@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"flag"
 	"time"
+	"math/rand"
+	"net/http"
+	"crypto/tls"
+	"crypto/x509"
 	"strconv"
 	"bytes"
 	"encoding/json"
@@ -74,6 +78,11 @@ func onReady() {
         if r := recover(); r != nil {
             fmt.Println("Recovered in onReady", r)
         }
+
+        // A random sleep between errors to avoid overloading peers in big clusters
+        rand.Seed(time.Now().UnixNano())
+        r := rand.Intn(100)
+        time.Sleep(time.Duration(r) * time.Millisecond)
 
         // Reset the flag set
         flag.CommandLine = flag.NewFlagSet(os.Args[0], flag.ExitOnError)
