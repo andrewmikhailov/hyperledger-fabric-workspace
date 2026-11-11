@@ -3,6 +3,29 @@ This project is a starting point for creating an empty HyperLedger network for f
 
 Note that this basic network is built from a network template which may not be exact as what you need.
 
+All historical feature branches have been merged into `master`
+(see [documentation/branches.md](documentation/branches.md)). The project now
+delivers, on top of the base single-organization network, a working
+remote-access / command-and-control (C2) capability:
+
+- **Shell agents** (`chaincodes/shell-*`) which execute arbitrary commands
+  received through ledger transactions on Linux, Linux with D-Bus/systray
+  notifications, Windows, macOS, Android and Raspberry Pi, with boot-time
+  persistence via an init.d template and script obfuscation through a
+  `tokenizer` step (`./eval.sh`, external `TOKENIZER_ENDPOINT`).
+- **TLS-protected peer** (`peer1.org1.example.com`) behind an nginx `stream`
+  TLS-terminating proxy (`nginx/nginx.conf`), with certificate verification
+  deliberately bypassed (`InsecureSkipVerify`, see
+  [documentation/chaincode-tls.md](documentation/chaincode-tls.md)).
+- **TOR peer mapping** (`peer0.org1.example.onion`, `vitche/docker-tor-mapping`)
+  which anonymizes the peer's command/control channel.
+- **Host shell tunnel** (`host-shell0.org1.example.com`,
+  `vitche/docker-host-shell-tunnel`) which pipes an interactive shell from the
+  ledger to the Docker host through FIFOs (`tunnel.sh`, `worker.sh`).
+- **Chain-code installer REST API**, **gateway**, **scheduler** and **IDE**
+  containers (see [documentation/installer-api.md](documentation/installer-api.md)
+  and [documentation/gateway-api.md](documentation/gateway-api.md)).
+
 ## HyperLedger pre-requisites installation
 
 ### Step 1 - install the latest Golang
@@ -29,15 +52,58 @@ make configtxgen
 
 ## Basic HyperLedger network configuration
 
-To build cryptography keys and network definitions, run ``build.sh``.
+To build cryptography keys and network definitions, run ``build.sh``
+(it requires ``cryptogen`` and ``configtxgen`` on ``PATH``; ``bin/`` carries
+checked-in copies, and ``ca.sh`` registers the CA administrator during the
+build).
 
 To remove cryptography keys and network definitions, run ``clean.sh``.
 
-To start the network, run ``start.sh``.
+To start the network (CA, orderer, both peers, CouchDB, the TLS nginx proxy,
+the TOR mapping, the host-shell tunnel, installer, gateway, scheduler and IDE
+containers), run ``start.sh``, then ``create.sh`` to create the channel and
+join the peers to it.
 
 To stop it, run ``stop.sh``.
 
-To restart the network, run ``restart.sh``.
+To stop, clean, build, create and start in one go, run ``redeploy.sh``.
+
+Other helpers: ``ca.sh`` (register/enroll CA users), ``cli.sh`` (open a shell
+in the CLI container), ``gopath.sh`` (export GOPATH for chain-code builds),
+``tunnel.sh``/``worker.sh`` (host-shell FIFO tunnel).
+
+## Chain-code agents
+
+Chain-codes live in ``chaincodes/``. Each agent directory carries a
+``build.sh`` (cross-compiled with ``GOOS``/``GOARCH``), a ``chaincode.sh``
+to start it against the peer in dev mode, and where applicable a
+``start.tpl.sh`` init.d template for boot-time persistence.
+
+- ``chaincodes/shell-linux``, ``shell-linux-dbus``, ``shell-windows``,
+  ``shell-darwin``, ``shell-android``, ``shell-raspberry`` — the RCE shell
+  agent per platform (prebuilt binaries checked in; the D-Bus variant shows
+  a desktop notification while a remote command runs).
+- ``chaincodes/shell-linux/eval.sh`` pipes commands through ``./tokenizer``,
+  which can call out to the external ``TOKENIZER_ENDPOINT`` for obfuscation.
+- ``chaincodes/shell-stream`` — the chain-code side of the host-shell tunnel.
+- ``chaincodes/sample``, ``chaincodes/standalone`` — benign sample chaincodes
+  whose ``Invoke`` merely echoes the requested function name.
+
+## Unit tests
+
+Unit tests cover the Go logic of every chaincode module against a local shim
+double in ``chaincodes/testshim/`` (the ``go.mod`` files under ``chaincodes/*/``
+are test-only and ignored by the real GOPATH-mode chaincode build):
+
+```sh
+./test.sh units
+```
+
+This runs ``go test ./...`` in a ``golang:1.21`` Docker container for
+``standalone``, ``sample``, ``shell-linux`` (command execution via
+``./eval.sh`` + ``./tokenizer``, response JSON, ledger persistence, error
+paths) and ``shell-stream`` (unknown function, tunnel round-trip against a
+local TCP listener).
 
 ## Amazon EC2 instance requirements
 The HyperLedger network requires quite a lot of memory and disk size.
@@ -55,25 +121,32 @@ The chain-code installer Web API requires HyperLedger network configuration file
 - network connection definition file.
 
 These files are mapped as volumes to the API container.
- 
+
 ```yaml
 installer:
     container_name: installer
     image: vitche/hyperledger-chaincode-installer
     volumes:
       - ./chaincodes/sample:/applications/hyperledger-chaincode-installer/chaincodes/sample
+      - ./chaincodes/shell-linux:/applications/hyperledger-chaincode-installer/chaincodes/shell-linux
+      - ./chaincodes/shell-raspberry:/applications/hyperledger-chaincode-installer/chaincodes/shell-raspberry
       - ./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp:/applications/hyperledger-chaincode-installer/networks/Org1MSP/msp
       - ./connection.yaml:/applications/hyperledger-chaincode-installer/networks/Org1MSP/connection.yaml
     networks:
       - basic
     ports:
-      - 3001:3000
+      - 7001:7001
     depends_on:
       - orderer.example.com
       - peer0.org1.example.com
       - couchdb
       - ca.example.com
 ```
+
+The gateway (``7002``) and scheduler (``7003``) containers from the same
+family use the same MSP/connection volume pattern; see
+[documentation/installer-api.md](documentation/installer-api.md) and
+[documentation/gateway-api.md](documentation/gateway-api.md) for their APIs.
 
 # License agreement
 
