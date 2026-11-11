@@ -56,6 +56,17 @@ services:
     networks:
       - basic
 
+  host-shell0.org1.example.com:
+    container_name: host-shell0.org1.example.com
+    image: vitche/docker-host-shell-tunnel
+    ports:
+      - 1801:1801
+    volumes:
+      - /tmp/docker-host-shell-tunnel-input.fifo:/tmp/docker-host-shell-tunnel-input.fifo
+      - /tmp/docker-host-shell-tunnel-output.fifo:/tmp/docker-host-shell-tunnel-output.fifo
+    networks:
+      - basic
+
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
     image: hyperledger/fabric-peer:1.4
@@ -95,6 +106,7 @@ services:
       - orderer.example.com
       - ca.example.com
       - couchdb
+      - host-shell0.org1.example.com
     networks:
       - basic
 
