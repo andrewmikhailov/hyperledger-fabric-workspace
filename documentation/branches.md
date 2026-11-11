@@ -28,9 +28,9 @@ flowchart TD
     cross --> tok["chaincode/shell-tokenizer<br/><i>tokenizer, init.d daemon, 2nd peer</i>"]
     tok --> tls["chaincode/tls<br/><i>TLS peer + nginx proxy (tip)</i>"]
 
-    classDef merged fill:#d5e8d4,stroke:#82b366;
-    classDef base fill:#dae8fc,stroke:#6c8ebf;
-    classDef tip fill:#ffe6cc,stroke:#d79b00;
+    classDef merged fill:#b7e1a1,stroke:#2e7d32,stroke-width:2px,color:#102a12;
+    classDef base fill:#aaccf5,stroke:#1565c0,stroke-width:2px,color:#0a1f3d;
+    classDef tip fill:#ffc48a,stroke:#e06c00,stroke-width:2px,color:#3d2200;
     class ca,installer,standalone merged;
     class master base;
     class tls tip;
