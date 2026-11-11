@@ -1,7 +1,9 @@
 for folder in */; do
   (
     cd "$folder"
-    ./build.sh
+    if [ -f ./build.sh ]; then
+      ./build.sh
+    fi
     cd ..
   )
 done
