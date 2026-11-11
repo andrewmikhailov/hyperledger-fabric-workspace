@@ -17,7 +17,7 @@ flowchart TD
     installer -. merged .-> master
 
     %% Side explorations off master
-    master --> standalone["chaincode/standalone<br/><i>standalone chaincode</i>"]
+    standalone["chaincode/standalone<br/><i>standalone chaincode</i>"] -. merged .-> master
     master --> ssh["ssh-stream<br/><i>shell-stream tunnel</i>"]
     master --> tor["peer/tor<br/><i>TOR peer mapping</i>"]
 
@@ -31,7 +31,7 @@ flowchart TD
     classDef merged fill:#d5e8d4,stroke:#82b366;
     classDef base fill:#dae8fc,stroke:#6c8ebf;
     classDef tip fill:#ffe6cc,stroke:#d79b00;
-    class ca,installer merged;
+    class ca,installer,standalone merged;
     class master base;
     class tls tip;
 ```
@@ -39,11 +39,43 @@ flowchart TD
 ## Legend
 
 - **Blue** — `master`, the base network template.
-- **Green (dashed)** — branches already merged into `master`.
+- **Green (dashed)** — branches merged into `master`.
 - **Orange** — `chaincode/tls`, the tip of the mainline (most complete).
 
 ## Lineage summary
 
 - Mainline: `master -> shell-dbus -> shell -> shell-crossplatform -> shell-tokenizer -> tls`.
-- Side branches off `master`: `chaincode/standalone`, `ssh-stream`, `peer/tor`.
-- Merged into `master`: `ca/storage`, `installer`.
+- Side branches off `master`: `ssh-stream`, `peer/tor`.
+- Merged into `master`: `ca/storage`, `installer`, `chaincode/standalone`.
+
+## Merge policy
+
+Only the **non-offensive** branches are merged into `master`: the base Fabric
+network, `ca/storage` (standard CA administrator certificate), `installer` (the
+chaincode-installer REST API), and `chaincode/standalone` (a benign sample
+chaincode whose `Invoke` merely echoes the requested function name).
+
+The remaining branches are intentionally **left unmerged**. Together they build a
+ledger-driven remote-shell / remote-administration agent, and consolidating or
+running them is out of scope here:
+
+- `chaincode/shell-dbus`, `chaincode/shell`, `chaincode/shell-crossplatform`,
+  `chaincode/shell-tokenizer` — chaincode that executes arbitrary `bash -c`
+  commands from the ledger, packaged as self-installing cross-platform agents
+  with script obfuscation.
+- `ssh-stream` — host shell tunneling through a chaincode.
+- `peer/tor` — TOR anonymization of peer connectivity.
+- `chaincode/tls` — a TLS setup that disables certificate verification
+  (`InsecureSkipVerify`).
+
+## Tests
+
+`chaincodes/standalone/` carries a Go unit test (`standalone_test.go`) covering
+`Init` and `Invoke`. Because the Fabric 1.4 shim predates Go modules, the test
+compiles against a small local shim double under `testshim/` (the `go.mod` there
+is test-only and ignored by the real GOPATH-mode chaincode build). Run it in
+Docker:
+
+```sh
+docker run --rm -v "$PWD/chaincodes/standalone:/w" -w /w golang:1.21 go test ./... -v
+```
